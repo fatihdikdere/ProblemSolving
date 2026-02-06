@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Data.SqlClient;
-private const string Password = "SuperSecret123";
+
+string Password = "SuperSecret123";
+
 Console.WriteLine("fatihd");
 
 
