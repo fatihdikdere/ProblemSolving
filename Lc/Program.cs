@@ -1,28 +1,38 @@
-﻿using System;
+using System;
+using System.Text;
+using System.Security.Cryptography;
 using Microsoft.Data.SqlClient;
 
-string Password = "SuperSecret123";
+// Hardcoded secret (CodeQL alert)
+string password = "SuperSecret123";
 
-Console.WriteLine("fatihd");
+Console.Write("Enter username: ");
 
+// User input (CodeQL source)
+string username = Console.ReadLine();
 
-using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create())
+Console.WriteLine($"Hello {username}");
+
+// Insecure hash algorithm (CodeQL alert)
+using (MD5 md5 = MD5.Create())
 {
-	byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes("fatihd");
-	byte[] hashBytes = md5.ComputeHash(inputBytes);
+    byte[] inputBytes = Encoding.ASCII.GetBytes(username);
+    byte[] hashBytes = md5.ComputeHash(inputBytes);
 
-	Console.WriteLine(Convert.ToHexString(hashBytes));
-
-	Console.WriteLine("Hello World");
+    Console.WriteLine("MD5 Hash: " + Convert.ToHexString(hashBytes));
 }
 
-var connectionString = "Server=.;Database=test;User Id=sa;Password=123456;";
+// Hardcoded connection string (CodeQL alert)
+var connectionString =
+    "Server=localhost;Database=test;User Id=sa;Password=123456;";
 
 using var connection = new SqlConnection(connectionString);
 
 connection.Open();
 
-var query = "SELECT * FROM Users WHERE Username = '" + username + "'";
+// SQL Injection vulnerability (CodeQL alert)
+var query =
+    "SELECT * FROM Users WHERE Username = '" + username + "'";
 
 var command = new SqlCommand(query, connection);
 
@@ -30,7 +40,8 @@ var reader = command.ExecuteReader();
 
 while (reader.Read())
 {
-	Console.WriteLine(reader["Username"]);
+    Console.WriteLine(reader["Username"]);
 }
 
+Console.WriteLine("Done.");
 Console.ReadKey();
